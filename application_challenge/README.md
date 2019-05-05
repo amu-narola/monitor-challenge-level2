@@ -1,30 +1,36 @@
-**Goal**
+###Goal
 
 *L1.*
+
 Create a small PORO application that will fetch sample data from API, 
 convert it to given format and save to SQL. 
 For testing - create a fake API server that will respond with API samples provided.
 
 *L2.*
+
 Create a Rake task for application deployment to AWS Lambda, using ruby AWS SDK 
 Deploy application to AWS Lambda, and make sure it works.
 
-**Business Specification**
+**Estimated time for completion: 6 - 8 hours**
+
+###Business Specification
 
 As a customer i want to collect statistics of web site visits, that is provided by API server, 
 and store it to MySQL database for later usage.
 
-Sample API server response is in `samples/api_response.json`
+Sample API server response is located in `samples/api_response.json`
 
 The API response is an array containing multiple elements, representing `visit`. Each `visit` contains nested array, 
 called `actionDetails`, each element represents `pageview`.
 
-We need the data to be saved to 2 different tables:
-`visits` and `pageviews`. API responce fields are different of what is in tables.
+We need the data to be saved into 2 different tables:
+`visits` and `pageviews`.  
 
-Create models `Visit` and `Pageview`. `Visit` is as associated with `Pageview` with one to many relation. 
+Create models `Visit` and `Pageview`. `Visit` is as associated with `Pageview` with one to many relation.
+API responce fields are different of table columns. You will need to map needed response field to appropriate column.
+Skip all other response fields.
 
-`visits` table schema:
+**Visits schema and mappings** 
 
 ```ruby
     t.string "evid"
@@ -46,12 +52,13 @@ Create models `Visit` and `Pageview`. `Visit` is as associated with `Pageview` w
 }
 ```
 
-Please clear up `referrerName` field before saving, it should validate wit following regex:
+**`evid` column validation**
+
+Please clear up `referrerName` response field value before saving, it should validate with following regex:
 
 `/\A[A-z0-9]{8}-[A-z0-9]{4}-[A-z0-9]{4}-[A-z0-9]{4}-[A-z0-9]{12}\z/` 
 
-
-`pageviews` table schema:
+**Pageviews schema and mappings**
 
 ```ruby
     t.bigint "visit_id"
@@ -72,12 +79,14 @@ Please clear up `referrerName` field before saving, it should validate wit follo
   'timestamp' => :timestamp
 }
 ```
+
+**Position column**
+
 For `pageview` you will need to add the `position` field which indicates `pageview` position in data source array.
-Please ensure that pages are unique, and there are no duplicates  
+Please ensure that pages are unique, and there are no duplicates.  
 
 
-
-**Requirements**
+###Requirements
 
 *L1.*
 
@@ -95,26 +104,27 @@ Please ensure that pages are unique, and there are no duplicates
   + AWS RDS for MySQL database (use free tier)
 
   
-**Deliverable**
+###Deliverable
 
 *L1.*
 
 A project directory containing Docker file (optionally with docker-compose), that can be built,
 and then executed with: 
 
-  ```bash
-    docker build -t shastic_challenge .
-    docker run -it -v "$(pwd)"/:/target_path shastic_challenge
-    bash# bundle exec app.rb
-  ```
+```
+docker build -t shastic_challenge .
+docker run -it -v "$(pwd)"/:/target_path shastic_challenge
+bash# bundle exec app.rb
+```
   
   or with Docker compose
   
-  ```bash
-    docker-compose build
-    docker-compose up -d
-    docker-compose exec shastic_challenge bundle exec app.rb  
-  ```
+```
+docker-compose build
+docker-compose up -d    
+docker-compose exec shastic_challenge bundle exec app.rb      
+```
+
 and create desired records in database
   
 *L2.*
@@ -122,8 +132,7 @@ and create desired records in database
 A working AWS Lambda function that fetches from fake API server (inline) 
 a sample responce and saves converted data to RDS
 
-
-**Things this challenge evaluates**
+###Things this challenge evaluates
 
 *L1.*
 
