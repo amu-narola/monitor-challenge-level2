@@ -26,6 +26,8 @@ called `actionDetails`, each element represents `pageview`.
 We need the data to be saved into 2 different tables:
 `visits` and `pageviews`.  
 
+Create migrations to create those tables.
+
 Create models `Visit` and `Pageview`. `Visit` is as associated with `Pageview` with one to many relation.
 API responce fields are different of table columns. You will need to map needed response field to appropriate column.
 Skip all other response fields.
@@ -114,7 +116,7 @@ and then executed with:
 ```
 docker build -t shastic_challenge .
 docker run -it -v "$(pwd)"/:/target_path shastic_challenge
-bash# bundle exec app.rb
+bash# bundle exec -r 'app.rb' -e 'call'
 ```
   
   or with Docker compose
@@ -122,7 +124,7 @@ bash# bundle exec app.rb
 ```
 docker-compose build
 docker-compose up -d    
-docker-compose exec shastic_challenge bundle exec app.rb      
+docker-compose exec shastic_challenge bundle exec -r 'app.rb' -e 'call'      
 ```
 
 and create desired records in database
