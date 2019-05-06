@@ -23,14 +23,17 @@ Sample API server response is located in `samples/api_response.json`
 The API response is an array containing multiple elements, representing `visit`. Each `visit` contains nested array, 
 called `actionDetails`, each element represents `pageview`.
 
+**Models**
+
 We need the data to be saved into 2 different tables:
 `visits` and `pageviews`.  
 
 Create migrations to create those tables.
-
 Create models `Visit` and `Pageview`. `Visit` is as associated with `Pageview` with one to many relation.
-API responce fields are different of table columns. You will need to map needed response field to appropriate column.
-Skip all other response fields.
+
+API response field names are different from table column names. 
+Please use mapping given below to assign source field values to target database columns.
+Ignore source fields that are not listed in below mapping.
 
 **Visits schema and mappings** 
 
@@ -82,11 +85,34 @@ Please clear up `referrerName` response field value before saving, it should val
 }
 ```
 
+**Pageviews order**
+
+Pageviews should be sorted by `timestamp` field, in ascending order.
+
 **Position column**
 
 For `pageview` you will need to add the `position` field which indicates `pageview` position in data source array.
 Please ensure that pages are unique, and there are no duplicates.  
 
+**Fake API server**
+
+You will need to create a simple Fake API server for handling responses. The server should accept get request,
+ad respond with the json given in `samples/api_response.json`. We suggest to use Sinatra for creating small inline server,
+but final solution is after you.
+
+**Setup**
+
+*L1.*
+
+Please use included docker-compose.yml. It will spinup ready-for-work ruby-2.5.5 and mysql containers linking each other
+Create Gemfile with required gems, before executing `docker-compose up`, as it will try to do `bundle install`
+
+*L2.*
+
+Change `docker/app/Dockerfile` image source to `lambci/lambda:build-ruby2.5` as it's 
+the closest image to AWS Lambda. You will need to install `mysql-devel` package 
+there and copy mysql shared library to `lib` folder, in order in order to make 
+mysql client work on AWS Lambda.
 
 ###Requirements
 
@@ -95,9 +121,10 @@ Please ensure that pages are unique, and there are no duplicates.
   + Ruby MRI 2.5+
   + Rspec for tests (100% coverage)
   + Rubocop for linting ruby code
+  + Simplecov for code coverage
   + ActiveRecord for models (arguable)
   + MySQL for database
-  + Docker + optionally docker-compose for containerization
+  + Docker + docker-compose for containerization
   
 *L2.*
 
@@ -110,12 +137,11 @@ Please ensure that pages are unique, and there are no duplicates.
 
 *L1.*
 
-A project directory containing Docker file (optionally with docker-compose), that can be built,
-and then executed with: 
+A project directory containing `app.rb` file, with the `call` method inside, that we can run inside Docker: 
 
 ```
 docker build -t shastic_challenge .
-docker run -it -v "$(pwd)"/:/target_path shastic_challenge
+docker run -it -v "$(pwd)"/:/app shastic_challenge
 bash# bundle exec -r 'app.rb' -e 'call'
 ```
   
@@ -127,7 +153,7 @@ docker-compose up -d
 docker-compose exec shastic_challenge bundle exec -r 'app.rb' -e 'call'      
 ```
 
-and create desired records in database
+Executing above commands should create records in database according to specification.
   
 *L2.*
 
