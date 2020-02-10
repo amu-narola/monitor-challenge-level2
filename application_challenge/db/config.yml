@@ -1,0 +1,8 @@
+development:
+  adapter: 'mysql2'
+  host: 'localhost'
+  username: 'root'
+  password: 'mynewpassword'
+  database: 'poro_dev'
+  timeout: 5000
+  pool: 5
