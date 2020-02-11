@@ -1,13 +1,12 @@
+require_relative 'connection.rb'
 class PageView < ActiveRecord::Base
+
+  # Associations
   belongs_to :visit
-  validates :visit_id, :title, :url, :time_spent, :timestamp, presence: true
+  validates :visit_id, :title, :url, :position, :time_spent, :timestamp, presence: true
+
+  # Validations
+  validates_uniqueness_of :timestamp, scope: :visit_id, case_sensitive: true
 end
 
-
-ActiveRecord::Base.establish_connection(
-  adapter: 'mysql2',
-  host: '127.0.0.1',
-  username: 'root',
-  password: 'mynewpassword',
-  database: 'poro_dev'
-)
+Connection.new.call

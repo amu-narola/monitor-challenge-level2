@@ -1,5 +1,4 @@
 require 'sinatra'
-require 'pry-remote'
 
 get '/fetch_response' do
   file = File.open("api_response.json")
