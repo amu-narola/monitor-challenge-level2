@@ -11,14 +11,12 @@ class BusinessService
                         vendor_visitor_id: res['visitorId'])
       position = 0
       if visit.save
-        puts "Visit Created"
         position = position + 1
         pageview_details = res['actionDetails'].sort_by { |hsh| hsh[:timestamp] }
         pageview_details.each do |action_detail|
           pageview = visit.page_views.create(visit_id: visit.id, url: action_detail['url'],
-                                             title: action_detail['pageTitle'], time_spent: ['timeSpent'],
-                                             timestamp: ['timestamp'], position: position)
-          puts "Pageview Created" if pageview.persisted?
+                                             title: action_detail['pageTitle'], time_spent: action_detail['timeSpent'],
+                                             timestamp: action_detail['timestamp'], position: position)
         end
       end
     end
