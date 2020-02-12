@@ -1,4 +1,3 @@
-require 'pry'
 require 'httpclient'
 
 class HttpService

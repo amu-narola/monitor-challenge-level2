@@ -1,6 +1,7 @@
-require_relative 'connection.rb'
-class PageView < ActiveRecord::Base
+require 'active_record'
+require_relative './connection.rb'
 
+class PageView < ActiveRecord::Base
   # Associations
   belongs_to :visit
   validates :visit_id, :title, :url, :position, :time_spent, :timestamp, presence: true

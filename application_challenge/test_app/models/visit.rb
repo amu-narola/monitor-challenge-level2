@@ -1,3 +1,6 @@
+require 'active_record'
+require_relative './connection.rb'
+
 class Visit < ActiveRecord::Base
 
   # Associations
